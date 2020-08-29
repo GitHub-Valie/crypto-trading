@@ -1,0 +1,6 @@
+backtrader
+matplotlib
+numpy
+pandas
+pymongo
+python-binance

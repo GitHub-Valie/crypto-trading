@@ -1,0 +1,4 @@
+python_binance
+flask
+jsonify
+pandas
