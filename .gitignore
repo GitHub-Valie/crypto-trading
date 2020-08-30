@@ -1,0 +1,5 @@
+*.vscode
+*__pycache__
+app/config.py
+backtest/config.py
+bot/config.py
