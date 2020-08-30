@@ -2,7 +2,7 @@ mongodb = {
     "host": "localhost:27017",
     "user": "",
     "passwd": "",
-    "db": "binance_15MINUTE",
+    "db": "binance_5MINUTE",
 }
 
 binance = {
