@@ -1,6 +1,7 @@
 *.vscode
 *__pycache__
 *config.py
+*test.py
 app/config.py
 backtest/config.py
 bot/config.py
