@@ -9,52 +9,52 @@
     <body>
         <div id="container">
 
-        <section id="topbar">
-            <h1 style="color:Black;font-size: 40px;">{{title}}</h1>
-        </section>
+            <section id="topbar">
+                <h1 style="color:Black;font-size: 40px;">{{title}}</h1>
+            </section>
 
-        <section id="mainbar">
-            <div id="My Balance">
-            <h2 style="padding-left:100px">Spot Account</h2>
+            <section id="mainbar">
+                <div id="My Balance">
+                <h2 style="padding-left:100px">Spot Account</h2>
 
-                <br>
-            <table>
-                <tr>
-                    <th>
-                        Assets
-                    </th>
-                    <th>
-                        Available
-                    </th>
-                    <th>
-                        Value
-                    </th>
-                </tr>
-                {% for my_balance in my_balance %}
-                <tr>
-                    <td>
-                        {{my_balance['Assets']}}
-                    </td>
-                    <td>
-                        {{my_balance['Free']}}
-                    </td>
-                    <td>
-                        {{my_balance['Value']}} $
-                    </td>
-                </tr>
-                {% endfor %}
-            </table>
-                <br>
-            <h4>
-                Total Spot Balance = {{my_total}} $
-            </h4>    
-        </section>
+                    <br>
+                <table>
+                    <tr>
+                        <th>
+                            Assets
+                        </th>
+                        <th>
+                            Available
+                        </th>
+                        <th>
+                            Value
+                        </th>
+                    </tr>
+                    {% for my_balance in my_balance %}
+                    <tr>
+                        <td>
+                            {{my_balance['Assets']}}
+                        </td>
+                        <td>
+                            {{my_balance['Free']}}
+                        </td>
+                        <td>
+                            {{my_balance['Value']}} $
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                    <br>
+                <h4>
+                    Total Spot Balance = {{my_total}} $
+                </h4>    
+            </section>
 
-        <script>
+            <script>
 
-            var tradeDiv = document.getElementById('trades')
+                var tradeDiv = document.getElementById('trades')
 
-        </script>
+            </script>
         </div>
     </body>
 </html>
