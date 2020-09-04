@@ -1,91 +1,69 @@
-from flask import Flask, render_template
-import jsonify, itertools
-
-import pandas as pd
-import config as cf ,csv
+from flask import Flask, render_template, request, flash, redirect, jsonify
+import config, csv, datetime
 from binance.client import Client
-from binance.websockets import BinanceSocketManager
 from binance.enums import *
 
 app = Flask(__name__)
+app.secret_key = b'somelongrandomstring'
 
 client = Client(
-    cf.binance['public_key'],
-    cf.binance['secret_key']
+    config.binance['public_key'], 
+    config.binance['secret_key']
 )
 
+
 @app.route('/')
-def index ():
-    title = 'Index'
-    my_balance = []
+def index():
+    title = 'CoinView'
+
     account = client.get_account()
-    balance = account['balances']
 
-    for x in balance:
-        if (x['free'] != '0.00000000') and (x['free'] != '0.00'):
-            my_balance.append({'Assets': x['asset'],
-                               'Free': x['free'],
-                               'Symbol': x['asset'] + "USDT",
-                               'Value': "0"}
-                              )
-    my_total = 0
-    for index in range(len(my_balance)):
-        try:
-            value = client.get_avg_price(symbol=my_balance[index]['Symbol'])
-            tmp= float(value['price']) * float(my_balance[index]['Free'])
-            my_total += tmp
-            my_balance[index]['Value'] = round(tmp,2)
-            my_balance[index]['Free'] = round(float(my_balance[index]['Free']),4)
-        except:
-            tmp = float(my_balance[index]['Free'])
-            my_total += tmp
-            my_balance[index]['Value'] = round(tmp, 2)
-            my_balance[index]['Free'] = round(float(my_balance[index]['Free']), 4)
+    balances = account['balances']
 
-    my_total = round(my_total,2)
-    return render_template(
-        'index.html', 
-        title=title,
-        my_balance=my_balance,
-        my_total=my_total
-    )
+    exchange_info = client.get_exchange_info()
+    symbols = exchange_info['symbols']
+
+    return render_template('index.html', title=title, my_balances=balances, symbols=symbols)
 
 
-# @app.route('/market')
-# def Market ():
-#     title = 'Market'
-#     return render_template('market.html', title=title)
+@app.route('/buy', methods=['POST'])
+def buy():
+    print(request.form)
+    try:
+        order = client.create_order(symbol=request.form['symbol'], 
+            side=SIDE_BUY,
+            type=ORDER_TYPE_MARKET,
+            quantity=request.form['quantity'])
+    except Exception as e:
+        flash(e.message, "error")
 
-# @app.route('/history')
-# def History ():
-#     title = 'Historical Trades'
-#     account_future = client.futures_exchange_info()
-#     liste_trades_future = []
-#     account_future = account_future['symbols']
-#     for index in range(len(account_future)):
-#         trades_future = client.futures_account_trades(symbol=account_future[index]['symbol'],startTime = 1598257547000 ) #,startTime = 1597622400
-#         for index in range(len(trades_future)):
-#             try:
-#                 liste_trades_future.append({'Symbol': trades_future[index]['symbol'],
-#                                             'Side': trades_future[index]['side'],
-#                                             'Price': trades_future[index]['price'],
-#                                             'Quantity': trades_future[index]['qty'],
-#                                             'PNL': trades_future[index]['realizedPnl'],
-#                                             'Time': trades_future[index]['time']})
-#             except:
-#                 pass
-#     PNL = []
-#     for key, group in itertools.groupby(liste_trades_future, lambda item: item["Symbol"]):
-#         new_dict = {}
-#         new_dict['Symbol'] = key
-#         new_dict['PNL'] = round(sum([float(item["PNL"]) for item in group]),2)
-#         PNL.append(new_dict)
-#     return render_template('history.html', title=title, futur_trades = liste_trades_future, PNL = PNL)
+    return redirect('/')
 
 
+@app.route('/sell')
+def sell():
+    return 'sell'
 
 
-if __name__ == "__main__":
-    # app.run(host='localhost', debug=False)
+@app.route('/settings')
+def settings():
+    return 'settings'
 
-    app.run(debug=True)
+@app.route('/history')
+def history():
+    candlesticks = client.get_historical_klines("BATBNB", Client.KLINE_INTERVAL_3MINUTE, "1 Aug, 2020", "3 Sep, 2020")
+
+    processed_candlesticks = []
+
+    for data in candlesticks:
+        candlestick = { 
+            "time": data[0] / 1000, 
+            "open": data[1],
+            "high": data[2], 
+            "low": data[3], 
+            "close": data[4]
+        }
+
+        processed_candlesticks.append(candlestick)
+
+    return jsonify(processed_candlesticks)
