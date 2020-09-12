@@ -7,21 +7,10 @@ client = Client(
     cff.binance['futures_secret']
 )
 
-TRADE_SYMBOL = 'BNB'
+TRADE_SYMBOL = 'ETHUSDT'
 SOCKET = "wss://fstream3.binance.com/stream?streams={}@kline_1m".format(TRADE_SYMBOL.lower())
 
-# futures_account = client.futures_account()
-
-# total_wallet_balance = futures_account['totalWalletBalance']
-# # for x in futures_account:
-# #     print(x)
-
-# exchange_info = client.get_exchange_info()
-# # for x in exchange_info:
-# #     print(x)
-
-# exchange_symbols = exchange_info['symbols']
-# # print(exchange_info)
+closes = []
 
 def on_open(ws):
     print("OPENED CONNECTION")
@@ -37,17 +26,25 @@ def on_message(ws,message):
     # print(json_message)
     data = json_message['data']
     candle = data['k']
-    print(candle)
-    # is_candle_closed = candle['x']
-    # close = candle['c']
-    # print(
-    #     json_message['s'],
-    #     "\nopen:      ", candle['o'],
-    #     "\nhigh:      ", candle['h'],
-    #     "\nlow:       ", candle['l'],
-    #     "\nclose:     ", close,
-    #     "\nvolume:    ", candle['v']
-    # )
+    # print(candle)
+    is_candle_closed = candle['x']
+    close = candle['c']
+    print(
+        candle['s'],
+        "\nopen:      ", candle['o'],
+        "\nhigh:      ", candle['h'],
+        "\nlow:       ", candle['l'],
+        "\nclose:     ", close,
+        "\nvolume:    ", candle['v']
+    )
+
+    if is_candle_closed:
+        print("\nCANDLE CLOSED AT {:.8f}".format(float(close)))
+        closes.append(float(close))
+        print("\nCLOSES")
+        print(closes)
+
+    # INSERT STRATEGY HERE
  
 ws = websocket.WebSocketApp(
     SOCKET, 
