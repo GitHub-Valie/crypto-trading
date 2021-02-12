@@ -1,4 +1,7 @@
-[ NOT MAINTAINED ]
+Project is not maintained. Instead:
+
+Visit https://github.com/GitHub-Valie/trading-app for the trading app (flask served react app)
+Visit https://github.com/GitHub-Valie/trading-bot for the trading bot
 
 # Projet : Algorithme de trading de cryptomonnaies
 
