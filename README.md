@@ -1,3 +1,5 @@
+[ NOT MAINTAINED ]
+
 # Projet : Algorithme de trading de cryptomonnaies
 
 Ce projet vise à développer un algorithme capable de passer des ordres d'achat et de vente de cryptomonnaies sur la base d'une stratégie déterminée par l'utilisateur.
